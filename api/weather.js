@@ -1,4 +1,4 @@
-// api/weather.js - Complete serverless function with map tile support
+// api/weather.js - Serverless function with map tile support
 export default async function handler(req, res) {
     // Enable CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -59,17 +59,8 @@ async function handleMapTile(req, res, layer, z, x, y) {
         return res.status(400).json({ error: 'Missing tile parameters' });
     }
     
-    // Map layer names to OpenWeatherMap layer codes
-    const layerCodes = {
-        'temp': 'temp_new',
-        'rain': 'precipitation_new',
-        'clouds': 'clouds_new',
-        'wind': 'wind_new',
-        'pressure': 'pressure_new',
-        'snow': 'snow_new'
-    };
-    
-    const layerCode = layerCodes[layer] || layerCodes['temp'];
+    // Default to precipitation layer if none specified
+    const layerCode = layer || 'precipitation_new';
     
     try {
         const tileUrl = `https://tile.openweathermap.org/map/${layerCode}/${z}/${x}/${y}.png?appid=${apiKey}`;

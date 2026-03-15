@@ -19,7 +19,7 @@ body {
     border-radius: 20px;
     padding: 30px;
     width: 100%;
-    max-width: 400px;
+    max-width: 800px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(10px);
 }
@@ -27,15 +27,21 @@ body {
 h1 {
     text-align: center;
     color: #333;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     font-size: 28px;
     font-weight: 600;
+}
+
+h3 {
+    color: #333;
+    margin: 20px 0 10px 0;
+    font-size: 20px;
 }
 
 .search-box {
     display: flex;
     gap: 10px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 #city-input {
@@ -74,7 +80,7 @@ h1 {
 }
 
 .weather-info {
-    min-height: 250px;
+    min-height: 200px;
 }
 
 .loading {
@@ -98,6 +104,7 @@ h1 {
 .weather-details {
     display: none;
     animation: fadeIn 0.5s;
+    margin-bottom: 20px;
 }
 
 @keyframes fadeIn {
@@ -162,8 +169,92 @@ h1 {
     font-weight: 600;
 }
 
+/* Map Styles */
+.map-section {
+    margin-top: 30px;
+    border-top: 2px solid #e0e0e0;
+    padding-top: 20px;
+}
+
+.map-container {
+    height: 400px;
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    margin-bottom: 15px;
+}
+
+#weather-map {
+    height: 100%;
+    width: 100%;
+}
+
+.map-controls {
+    display: flex;
+    gap: 10px;
+    margin: 15px 0;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.map-layer-btn {
+    padding: 8px 16px;
+    background: #f0f0f0;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.map-layer-btn.active {
+    background: #667eea;
+    color: white;
+    transform: scale(1.05);
+}
+
+.map-layer-btn:hover {
+    background: #764ba2;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.map-legend {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 10px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    color: #666;
+}
+
+.legend-item span {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+}
+
+/* Marker popup styles */
+.leaflet-popup-content {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
 /* Responsive design */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
     .weather-container {
         padding: 20px;
     }
@@ -182,5 +273,24 @@ h1 {
 
     #city-name {
         font-size: 22px;
+    }
+
+    .map-container {
+        height: 300px;
+    }
+
+    .map-controls {
+        gap: 5px;
+    }
+
+    .map-layer-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .map-layer-btn {
+        flex: 1 1 calc(50% - 10px);
     }
 }

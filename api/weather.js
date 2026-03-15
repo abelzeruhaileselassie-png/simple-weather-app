@@ -1,33 +1,92 @@
-// api/weather.js - This runs on Vercel's servers
+// api/weather.js - Complete serverless function with map tile support
 export default async function handler(req, res) {
-    // Enable CORS so your frontend can call this
+    // Enable CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     
-    // Get the city from the query parameter
-    const { city } = req.query;
+    const { city, tile, layer, z, x, y } = req.query;
     
+    // Handle map tile requests
+    if (tile === 'true') {
+        return handleMapTile(req, res, layer, z, x, y);
+    }
+    
+    // Handle weather data requests
+    return handleWeatherData(req, res, city);
+}
+
+// Handle weather data requests
+async function handleWeatherData(req, res, city) {
     if (!city) {
         return res.status(400).json({ error: 'City is required' });
     }
     
-    // Get API key from environment variable (set in Vercel dashboard)
+    const apiKey = process.env.OPENWEATHER_API_KEY;
+    
+    if (!apiKey) {
+        console.error('API key not configured');
+        return res.status(500).json({ error: 'Server configuration error' });
+    }
+    
+    try {
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${apiKey}&units=metric`;
+        
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (!response.ok) {
+            console.error('OpenWeatherMap error:', data);
+            return res.status(response.status).json({ 
+                error: data.message || 'Weather service error' 
+            });
+        }
+        
+        res.status(200).json(data);
+    } catch (error) {
+        console.error('Serverless function error:', error);
+        res.status(500).json({ error: 'Failed to fetch weather data' });
+    }
+}
+
+// Handle map tile requests
+async function handleMapTile(req, res, layer, z, x, y) {
     const apiKey = process.env.OPENWEATHER_API_KEY;
     
     if (!apiKey) {
         return res.status(500).json({ error: 'API key not configured' });
     }
     
+    if (!layer || !z || !x || !y) {
+        return res.status(400).json({ error: 'Missing tile parameters' });
+    }
+    
+    // Map layer names to OpenWeatherMap layer codes
+    const layerCodes = {
+        'temp': 'temp_new',
+        'rain': 'precipitation_new',
+        'clouds': 'clouds_new',
+        'wind': 'wind_new',
+        'pressure': 'pressure_new',
+        'snow': 'snow_new'
+    };
+    
+    const layerCode = layerCodes[layer] || layerCodes['temp'];
+    
     try {
-        // Make the request to OpenWeatherMap
-        const response = await fetch(
-            `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${apiKey}&units=metric`
-        );
+        const tileUrl = `https://tile.openweathermap.org/map/${layerCode}/${z}/${x}/${y}.png?appid=${apiKey}`;
         
-        const data = await response.json();
+        const response = await fetch(tileUrl);
         
-        // Return the data to your frontend
-        res.status(200).json(data);
+        if (!response.ok) {
+            return res.status(response.status).json({ error: 'Failed to fetch map tile' });
+        }
+        
+        const imageBuffer = await response.arrayBuffer();
+        
+        res.setHeader('Content-Type', 'image/png');
+        res.setHeader('Cache-Control', 'public, max-age=3600'); // Cache for 1 hour
+        res.send(Buffer.from(imageBuffer));
     } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch weather data' });
+        console.error('Map tile error:', error);
+        res.status(500).json({ error: 'Failed to fetch map tile' });
     }
 }

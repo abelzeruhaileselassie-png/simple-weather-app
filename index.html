@@ -3,12 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Weather App</title>
+    <title>Weather App with Maps</title>
+    
+    <!-- Leaflet CSS and JS for maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- OpenWeatherMap Leaflet plugin -->
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-openweathermap@1.1.0/leaflet-openweathermap.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-openweathermap@1.1.0/leaflet-openweathermap.css" />
+    
+    <!-- Your custom CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="weather-container">
-        <h1>Weather App</h1>
+        <h1>Weather App with Maps</h1>
         
         <div class="search-box">
             <input type="text" id="city-input" placeholder="Enter city name..." autocomplete="off">
@@ -35,8 +45,34 @@
                 </div>
             </div>
         </div>
+
+        <!-- Map Container -->
+        <div class="map-section">
+            <h3>Weather Map</h3>
+            <div class="map-container">
+                <div id="weather-map"></div>
+            </div>
+            
+            <!-- Map Layer Controls -->
+            <div class="map-controls">
+                <button class="map-layer-btn active" data-layer="temp">🌡️ Temperature</button>
+                <button class="map-layer-btn" data-layer="rain">☔ Rain</button>
+                <button class="map-layer-btn" data-layer="clouds">☁️ Clouds</button>
+                <button class="map-layer-btn" data-layer="wind">💨 Wind</button>
+                <button class="map-layer-btn" data-layer="pressure">📊 Pressure</button>
+                <button class="map-layer-btn" data-layer="snow">❄️ Snow</button>
+            </div>
+            
+            <!-- Map Legend -->
+            <div class="map-legend" id="map-legend">
+                <div class="legend-item"><span style="background: #00ff00"></span> Light</div>
+                <div class="legend-item"><span style="background: #ffff00"></span> Moderate</div>
+                <div class="legend-item"><span style="background: #ff0000"></span> Heavy</div>
+            </div>
+        </div>
     </div>
 
+    <!-- Your custom JavaScript -->
     <script src="script.js"></script>
 </body>
 </html>
